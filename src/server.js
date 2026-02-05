@@ -2,7 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.get('/notes',(req, res) => {
   res.status(200).json({
@@ -10,9 +10,12 @@ app.get('/notes',(req, res) => {
   });
 });
 
-app.get('/notes/:noteId', (req, res) => {
+app.get('/notes/:noteId',(req, res) => {
+  const { noteId } = req.params;
+
   res.status(200).json({
-    message: "Retrieved note with ID: id_param"
+    id_param: noteId,
+    message: `Retrieved note with ID: ${noteId}`
   });
 });
 
