@@ -8,23 +8,12 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export function saveFileToCloudinary(buffer, userId) {
-  if (!buffer) {
-    return Promise.reject(new Error('File buffer is required'));
-  }
-
-  if (!userId) {
-    return Promise.reject(new Error('User ID is required'));
-  }
-
+export async function saveFileToCloudinary(buffer) {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
         folder: 'notes-app/avatars',
         resource_type: 'image',
-        public_id: `avatar_${userId}`,
-        overwrite: true,
-        unique_filename: false,
       },
       (error, result) => {
         if (error) {
@@ -34,10 +23,6 @@ export function saveFileToCloudinary(buffer, userId) {
       },
     );
 
-    const readableStream = new Readable();
-    readableStream.push(buffer);
-    readableStream.push(null);
-
-    readableStream.pipe(uploadStream);
+    Readable.from(buffer).pipe(uploadStream);
   });
 }
