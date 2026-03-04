@@ -1,15 +1,14 @@
-import { Readable } from 'node:stream';
 import { v2 as cloudinary } from 'cloudinary';
+import { Readable } from 'node:stream';
 
 cloudinary.config({
-  secure: true,
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const saveFileToCloudinary = (buffer) => {
-  return new Promise((resolve, reject) => {
+export async function saveFileToCloudinary(buffer) {
+  const result = await new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
         folder: 'notes-app/avatars',
@@ -28,4 +27,6 @@ export const saveFileToCloudinary = (buffer) => {
 
     Readable.from(buffer).pipe(uploadStream);
   });
-};
+
+  return result;
+}
