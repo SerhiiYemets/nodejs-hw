@@ -46,7 +46,8 @@ export const updateNote = async (req, res) => {
   const note = await Note.findByIdAndUpdate(
     noteId,
     req.body,
-    { new: true },
+      { returnDocument: 'after'
+    },
   );
 
   if (!note) {
